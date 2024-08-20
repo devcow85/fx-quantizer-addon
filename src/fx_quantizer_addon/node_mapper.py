@@ -35,6 +35,8 @@ class FxNodeMapper:
         self.opset = opset
         self.scale_table = None
         self.modified_traced = None
+        
+        self.generate_scale_table()
 
     def generate_scale_table(self):
         

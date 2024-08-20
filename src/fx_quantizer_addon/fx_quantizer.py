@@ -24,7 +24,7 @@ class FxQuantizer:
         prepared_model = quantize_fx.prepare_fx(model_fx, 
                                                 torch.ao.quantization.QConfigMapping().set_global(qconfig),
                                                 example_inputs=(self.example_input,))
-        
+        prepared_model(self.example_input)
         return prepared_model
     
     def convert_model(self, prepared_model):
@@ -50,7 +50,7 @@ class FxQuantizer:
                 loss.backward()
                 optimizer.step()
     
-    def ptsq(self, data_loader, qconfig='per_tensor', num_batches=None):
+    def ptsq(self, data_loader, qconfig='per_tensor_lwnpu', num_batches=None):
         if isinstance(qconfig, str):
             qconfig = qconfig_preset[qconfig]
 
@@ -58,14 +58,14 @@ class FxQuantizer:
         self.calibration(data_loader, num_batches)
         return self.convert_model(prepared_model)
     
-    def ptdq(self, qconfig='per_tensor'):
+    def ptdq(self, qconfig='per_tensor_lwnpu'):
         if isinstance(qconfig, str):
             qconfig = qconfig_preset[qconfig]
         
         prepared_model = self.prepare_model(qconfig)
         return self.convert_model(prepared_model)
     
-    def qat(self, data_loader, optimizer, criterion, num_epochs=5, qconfig='per_tensor'):
+    def qat(self, data_loader, optimizer, criterion, num_epochs=5, qconfig='per_tensor_lwnpu'):
         if isinstance(qconfig, str):
             qconfig = qconfig_preset[qconfig]
             
